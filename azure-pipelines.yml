@@ -24,7 +24,7 @@ steps:
 # Step 3: Run JMeter test
 - script: |
     echo "Running JMeter test..."
-    $(JMETER_HOME)/bin/jmeter -n -t DemoblazeRecording.jmx -l results.jtl -e -o results-report
+    $(JMETER_HOME)/bin/jmeter -n -t DemoblazeRecording - Copy.jmx -l results.jtl -e -o results-report
   displayName: 'Run JMeter Test Plan'
 
 # Step 4: Publish HTML report
