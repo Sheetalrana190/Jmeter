@@ -1,0 +1,37 @@
+trigger:
+- main
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  JMETER_VERSION: '5.6.3'
+  JMETER_HOME: '$(Pipeline.Workspace)/apache-jmeter-$(JMETER_VERSION)'
+
+steps:
+
+# Step 1: Confirm Java
+- script: java -version
+  displayName: 'Check Java Version'
+
+# Step 2: Download and extract JMeter
+- script: |
+    echo "Downloading Apache JMeter..."
+    wget https://downloads.apache.org/jmeter/binaries/apache-jmeter-$(JMETER_VERSION).tgz
+    tar -xzf apache-jmeter-$(JMETER_VERSION).tgz
+  displayName: 'Download and Extract JMeter'
+
+# Step 3: Run JMeter test
+- script: |
+    echo "Running JMeter test..."
+    $(JMETER_HOME)/bin/jmeter -n -t DemoblazeRecording.jmx -l results.jtl -e -o results-report
+  displayName: 'Run JMeter Test Plan'
+
+# Step 4: Publish HTML report
+- task: PublishBuildArtifacts@1
+  inputs:
+    pathToPublish: 'results-report'
+    artifactName: 'JMeterReport'
+    publishLocation: 'Container'
+  displayName: 'Publish JMeter HTML Report'
+
